@@ -1,0 +1,28 @@
+version: "3"
+services:
+    api:
+        build: .
+        container_name: api
+        ports:
+            - "8080:8080"
+        environment:
+          DB_HOST: "db"
+          DB_DIALECT: "MYSQL"
+          DB_URL: "jdbc:mysql://db:3306/lavagna"
+          DB_USER: ${MYSQL_UN_PW}
+          DB_PASS: ${MYSQL_UN_PW}
+          SPRING_PROFILE: "prod"
+    db:
+        container_name: db
+        image: mariadb:10.8
+        volumes:
+          - ./lavagna_utf8.sql:/docker-entrypoint-initdb.d/lavagna_utf8.sql
+          - DATA:/var/lib/mysql
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+#            MYSQL_USER: ${MYSQL_UN_PW}
+            MYSQL_PASSWORD: ${MYSQL_UN_PW}
+            MYSQL_DATABASE: "lavagna"
+volumes:
+    DATA:
